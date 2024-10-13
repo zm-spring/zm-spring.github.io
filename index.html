@@ -117,11 +117,12 @@
                 } else {
                     clearInterval(countdownInterval);
                     timerDisplay.classList.remove('countdown'); // 恢复默认样式
+                    playSound2(); // 在这里播放声音提示
                     intervalId = setInterval(() => {
                         timeLeft++; // 正向计时
                         timerDisplay.textContent = timeLeft;
                         if (timeLeft === initialTime) {
-                            playSound(); // 播放声音提示
+                            playSound1(); // 播放声音提示
                         }
                     }, 1000);
                 }
@@ -132,9 +133,15 @@
     }
 
     // 播放声音提示
-    const audio = new Audio('1.mp3'); // 替换为实际的声音文件URL
-    function playSound() {
-        audio.play().catch(error => {
+    const audio1 = new Audio('1.mp3'); // 替换为实际的声音文件URL
+    const audio2 = new Audio('2.mp3'); // 替换为实际的声音文件URL
+    function playSound1() {
+        audio1.play().catch(error => {
+            console.error("播放声音失败:", error);
+        });
+    }
+    function playSound2() {
+        audio2.play().catch(error => {
             console.error("播放声音失败:", error);
         });
     }
@@ -191,5 +198,6 @@
             `;
     }
 </script>
+
 </body>
 </html>
