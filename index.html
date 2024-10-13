@@ -11,7 +11,6 @@
             width: 800px;
             margin: auto;
         }
-
         /* 当屏幕宽度小于600px时 */
         @media (max-width: 600px) {
             .container {
@@ -22,7 +21,6 @@
             display: flex;
             flex-wrap: wrap; /* 允许子元素换行 */
         }
-
         .child {
             flex: 1 1 50%; /* 初始占据50%宽度 */
             @media (max-width: 600px) {
@@ -41,7 +39,7 @@
             padding: 20px;
         }
         #timer {
-            font-size: 160px;
+            font-size: 290px;
             text-align: center;
             margin-top: 5%;
             color: black; /* 默认字体颜色 */
@@ -134,8 +132,8 @@
     }
 
     // 播放声音提示
+    const audio = new Audio('1.mp3'); // 替换为实际的声音文件URL
     function playSound() {
-        const audio = new Audio('1.mp3'); // 替换为实际的声音文件URL
         audio.play().catch(error => {
             console.error("播放声音失败:", error);
         });
