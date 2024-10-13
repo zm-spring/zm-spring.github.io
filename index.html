@@ -39,7 +39,7 @@
             padding: 20px;
         }
         #timer {
-            font-size: 250px;
+            font-size: 200px;
             text-align: center;
             margin-top: 5%;
             color: black; /* 默认字体颜色 */
@@ -117,12 +117,12 @@
                 } else {
                     clearInterval(countdownInterval);
                     timerDisplay.classList.remove('countdown'); // 恢复默认样式
-                    playSound2(); // 在这里播放声音提示
+                    playSound1(); // 在这里播放声音提示
                     intervalId = setInterval(() => {
                         timeLeft++; // 正向计时
                         timerDisplay.textContent = timeLeft;
                         if (timeLeft === initialTime) {
-                            playSound1(); // 播放声音提示
+                            playSound2(); // 播放声音提示
                         }
                     }, 1000);
                 }
