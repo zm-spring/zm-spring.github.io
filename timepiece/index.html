@@ -119,6 +119,10 @@
                     intervalId = setInterval(() => {
                         timeLeft++; // 正向计时
                         timerDisplay.textContent = timeLeft;
+                        // 检查是否时间过半
+                        if (timeLeft === Math.floor(initialTime / 2)) {
+                            playSoundHalfway(); // 播放时间过半的声音提示
+                        }
                         if (timeLeft === initialTime) {
                             playSound2(); // 播放声音提示
                         }
@@ -131,8 +135,9 @@
     }
 
     // 播放声音提示
-    const audio1 = new Audio('/mp3/1.mp3'); // 替换为实际的声音文件URL
-    const audio2 = new Audio('/mp3/2.mp3'); // 替换为实际的声音文件URL
+    const audio1 = new Audio('mp3/1.mp3'); // 替换为实际的声音文件URL
+    const audio2 = new Audio('mp3/2.mp3'); // 替换为实际的声音文件URL
+    const audioHalfway = new Audio('mp3/3.mp3'); // 添加时间过半的声音文件URL
     function playSound1() {
         audio1.play().catch(error => {
             console.error("播放声音失败:", error);
@@ -143,7 +148,11 @@
             console.error("播放声音失败:", error);
         });
     }
-
+    function playSoundHalfway() {
+        audioHalfway.play().catch(error => {
+            console.error("播放声音失败:", error);
+        });
+    }
     // 停止计时并记录
     function stopTimer() {
         if (intervalId !== null) {
