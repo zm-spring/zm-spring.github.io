@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- 手机显示 -->
+    <meta name="viewport"
+          content="width=device-width,
+          initial-scale=1.0, minimum-scale=0.5,
+          maximum-scale=2.0, user-scalable=yes"/>
+    <!--JQuery-->
+    <script src="https://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <!--SUI-->
+    <link rel="stylesheet" href="https://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <title>道医 · 以针演道</title>
+    <link rel="shortcut icon" href="/five-technic/img/favicon.ico">
+</head>
+<style>
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+    }
+
+    li {
+        padding: 5px;
+    }
+
+    input {
+        letter-spacing: 2px;
+        width: 230px;
+        text-align: center
+    }
+
+    table {
+        margin: 10px auto;
+        text-align: center;
+        width: 95%;
+    }
+
+    td {
+        padding: 6px 0;
+        border: 1px solid rgba(0, 0, 0, 0.09);
+    }
+
+    @-webkit-keyframes rotation {
+
+        from {
+            -webkit-transform: rotate(-0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(-360deg);
+        }
+
+    }
+
+    .an {
+        -webkit-transform: rotate(-360deg);
+        animation: rotation 3s linear infinite;
+        -moz-animation: rotation 3s linear infinite;
+        -webkit-animation: rotation 3s linear infinite;
+        -o-animation: rotation 3s linear infinite;
+    }
+
+    .img {
+        border-radius: 250px;
+    }
+</style>
+<body>
+<div class="page-group" onload="showTimeIndex()">
+    <div class="page">
+        <header class="bar bar-nav">
+            <a class="icon icon-left pull-left" href="javascript:history.go(-1)"></a>
+            <a class="icon pull-right" href="javascript:location.reload()">
+                <img class="an img" src="/five-technic/img/yinYang.png" height="25px"/>
+            </a>
+            <h1 class="title">以针演道</h1>
+        </header>
+        <div class="content">
+            <table>
+                <tr>
+                    <td>
+                        <select id="cusBir">
+                            <option>阳历</option>
+                            <option>阴历</option>
+                        </select>
+                        <a href="javaScript:timeFilling();">时间</a>
+                    </td>
+                    <td>
+                        <input type="text" id="cusBirOvertOrShade"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>天干地支</td>
+                    <td>
+                        <text id="customizePatientCharacter"></text>
+                    </td>
+                </tr>
+                <tr>
+                    <td>生辰阴历</td>
+                    <td>
+                        <input type="text" id="birOvert"
+                               value="1998.8.22.10.40"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>天干地支</td>
+                    <td>
+                        <text id="tianGanDiZhi"></text>
+                    </td>
+                </tr>
+                <tr>
+                    <td>历史患者</td>
+                    <td>
+                        <select id="baZiHistory"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>穴位密钥</td>
+                    <td>
+                        <input type="password" id="key" value="d"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="card-container"></div>
+        </div>
+    </div>
+    <div class="popup popup-about">
+        <div class="content-block">
+            <p><a href="#" class="close-popup">Close popup</a></p>
+            <div id="window"></div>
+        </div>
+    </div>
+</div>
+</body>
+<!--CryptoJS-->
+<script src="js/cryptoJS/aes.js"></script>
+<script src="js/cryptoJS/core-min.js"></script>
+<script src="js/cryptoJS/rabbit.js"></script>
+<script src="js/cryptoJS/rc4.js"></script>
+<script src="js/cryptoJS/tripledes.js"></script>
+<!--perpetualCalendar-->
+<script src="js/lunar/lunar.js"></script>
+<!--SUI-->
+<script type='text/javascript' src='https://g.alicdn.com/sj/lib/zepto/zepto.js' charset='utf-8'></script>
+<script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm.js' charset='utf-8'></script>
+<!--customize-->
+<script src="js/customize/transform.js"></script>
+<script src="js/customize/acupunctureTools.js"></script>
+<!--pinArray-->
+<script src="js/customize/pinArray/tianGang.js"></script>
+<script src="js/customize/pinArray/baZi.js"></script>
+<script src="js/customize/pinArray/daZhouTian.js"></script>
+<script src="js/customize/pinArray/daXiaoZhouTian.js"></script>
+<script src="js/customize/pinArray/feiTen.js"></script>
+<script src="js/customize/pinArray/dingZhongGong.js"></script>
+<script src="js/customize/pinArray/lingGui.js"></script>
+<script src="js/customize/pinArray/console.js"></script>
+<script src="js/customize/pinArray/zhuangZhenYuan.js"></script>
+<script src="js/customize/pinArray/xuanXue.js"></script>
+<script src="js/customize/pinArray/trueSun.js"></script>
+<script src="js/customize/pinArray/tianYiRiFang.js"></script>
+<script>
+
+    $("#baZiHistory").append(
+        "<option value='1998.8.22.10.40'>自己_8_10</option>"
+        + "<option value='1972.6.26.18.00'>母亲_6_18</option>"
+        + "<option value='1900.12.18.16.00'>姥爷_12_16</option>"
+        + "<option value='1995.1.18.8.40'>姐姐_1_8</option>"
+        + "<option value='1900.12.18.16.00'>奶奶_6_12</option>"
+    );
+
+    $("#baZiHistory").change(function () {
+        $("#birOvert").val($("#baZiHistory").val());
+    });
+
+    setInterval(function () {
+        KEY = $("#key").val().trim().toLowerCase()
+
+        //八字
+        baZiFun()
+        // consoleFun("控制台", "consoleTag")
+        trueSunFun("真太阳时", "trueSunTag")
+        tianGangFun("仁督二脉灵穴 / 天罡方位", "tianGangTag")
+        tianYiRiFangFun("天医日 / 天医方", "tianYiRiFang")
+        daZhouTianFun("大周天灵穴", "daZhouTianTag")
+        daXiaoZhouTianFun("大小周天十二穴", "daXiaoZhouTianTag")
+        dingZhongGongFun("定中宫", "dingZhongGongTag")
+        feiTenFun("飞腾八法", "feiTenTag")
+        lingGuiFun("灵龟八法", "lingGuiTag")
+        zhuangZhenYuanFun("涌泉壮真元", "zhuangZhenYuanTag")
+        xuanXueFun("赤精玄血 / 推宫换血", "xuanXueTag")
+    }, 1000);
+
+</script>
+</html>
