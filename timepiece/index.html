@@ -133,8 +133,8 @@
     }
 
     // 播放声音提示
-    const audio1 = new Audio('1.mp3'); // 替换为实际的声音文件URL
-    const audio2 = new Audio('2.mp3'); // 替换为实际的声音文件URL
+    const audio1 = new Audio('/mp3/1.mp3'); // 替换为实际的声音文件URL
+    const audio2 = new Audio('/mp3/2.mp3'); // 替换为实际的声音文件URL
     function playSound1() {
         audio1.play().catch(error => {
             console.error("播放声音失败:", error);
