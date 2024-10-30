@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- 手机显示 -->
+    <meta name="viewport"
+          content="width=device-width,
+          initial-scale=1.0, minimum-scale=0.5,
+          maximum-scale=2.0, user-scalable=yes"/>
+    <!--JQuery-->
+    <script src="https://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <!--SUI-->
+    <link rel="stylesheet" href="https://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <title>中华五术</title>
+    <link rel="shortcut icon" href="/five-technic/img/favicon.ico">
+</head>
+<style>
+    body {
+        margin: 0 auto;
+        text-align: center
+    }
+
+    input {
+        width: 180px;
+        text-align: center
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    table {
+        margin: 10px auto;
+        text-align: center;
+        width: 95%;
+    }
+
+    tr, td {
+        border: 1px solid rgba(0, 0, 0, 0.09);
+    }
+</style>
+<body>
+<div onload="showTimeIndex()">
+    <div class="page">
+        <header class="bar bar-nav">
+            <button class="button button-link  pull-left">
+
+                <span class="icon icon-menu open-panel"></span>
+            </button>
+            <h1 class='title'>中华五术</h1>
+        </header>
+        <div class="content">
+            <ul id="uls">
+                <li></li>
+                <li></li>
+                <li>
+                    <table>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                    </table>
+                </li>
+            </ul>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-content-inner">
+
+                            <p>
+                                胎元：
+                                <text id="taiYuan"></text>
+                            </p>
+                            <p>
+                                胎息：
+                                <text id="taiXi"></text>
+                            </p>
+                            <p>
+                                命宫：
+                                <text id="mingGong"></text>
+                            </p>
+                            <p>
+                                身宫：
+                                <text id="shenGong"></text>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-overlay"></div>
+    <!-- Left Panel with Reveal effect -->
+    <div class="panel panel-left panel-cover theme-dark" id='panel-left-demo'>
+        <div class="content-block">
+            <img src="./img/wuxing.png" width="180px">
+        </div>
+        <div class="list-block">
+            <div class="content-block-title">List block buttons</div>
+            <div class="list-block">
+                <ul>
+                    <li><a href="needle.html" class="item-link list-button close-panel">道医取穴</a></li>
+                    <li><a href="stitch.html" class="item-link list-button close-panel">道医针术</a></li>
+                    <li><a href="#" class="item-link list-button close-panel">List Button 3</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="js/customize/transform.js"></script>
+<script src="http://6tail.cn/calendar/lunar.js"></script>
+<script type='text/javascript' src='https://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script>
+
+    function showTimeIndex() {
+
+        solar = Solar.fromDate(new Date());
+        lunar = solar.getLunar()
+        baZi = lunar.getEightChar();
+
+        //阳历
+        $("#uls li:eq(0)").html(
+            "阳历：" + solar.getYear() + "年" + nbsp
+            + solar.getMonth() + "月" + nbsp
+            + solar.getDay() + "日" + nbsp
+            + solar.getHour() + nbsp + ":" + nbsp
+            + solar.getMinute() + nbsp + ":" + nbsp
+            + solar.getSecond() + "时"
+        );
+
+        //阴历
+        $("#uls li:eq(1)").html(
+            "阴历：" + lunar.getYear() + "年" + nbsp
+            + lunar.getMonth() + "月" + nbsp
+            + lunar.getDay() + "日" + nbsp
+            + lunar.getHour() + nbsp + ":" + nbsp
+            + lunar.getMinute() + nbsp + ":" + nbsp
+            + lunar.getSecond() + "时"
+        );
+
+        //标题
+        $("#uls li:eq(2) table tr:eq(0)").html(
+            tdSplice(" ", "年柱", "月柱", "日柱", "时柱"));
+
+        //干神
+        $("#uls li:eq(2) table tr:eq(1)").html(
+            tdSplice(
+                "干神",
+                baZi.getYearShiShenGan(),
+                baZi.getMonthShiShenGan(),
+                baZi.getDayShiShenGan(),
+                baZi.getTimeShiShenGan())
+        );
+
+        //天干
+        $("#uls li:eq(2) table tr:eq(2)").html(
+            tdSplice(
+                "天干",
+                lunar.getYearGan(),
+                lunar.getMonthGan(),
+                lunar.getDayGan(),
+                lunar.getTimeGan())
+        );
+
+        //地支
+        $("#uls li:eq(2) table tr:eq(3)").html(
+            tdSplice(
+                "地支",
+                lunar.getYearZhi(),
+                lunar.getMonthZhi(),
+                lunar.getDayZhi(),
+                lunar.getTimeZhi())
+        );
+
+        //五行
+        $("#uls li:eq(2) table tr:eq(4)").html(
+            tdSplice(
+                "五行",
+                baZi.getYearWuXing(),
+                baZi.getMonthWuXing(),
+                baZi.getDayWuXing(),
+                baZi.getTimeWuXing())
+        );
+
+        //纳音
+        $("#uls li:eq(2) table tr:eq(5)").html(
+            tdSplice(
+                "纳音",
+                baZi.getYearNaYin(),
+                baZi.getMonthNaYin(),
+                baZi.getDayNaYin(),
+                baZi.getTimeNaYin())
+        );
+
+
+        $("#taiYuan").html(baZi.getTaiYuan() + "(" + baZi.getTaiYuanNaYin() + ")");
+
+        $("#mingGong").html(baZi.getMingGong() + "(" + baZi.getMingGongNaYin() + ")");
+        $("#shenGong").html(baZi.getShenGong() + "(" + baZi.getShenGongNaYin() + ")");
+
+
+    }
+
+    //每隔1000毫秒（即1秒）显示一次当前时间
+    setInterval("showTimeIndex()", 1000);
+
+</script>
+</html>
