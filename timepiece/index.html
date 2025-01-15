@@ -112,6 +112,7 @@
                     clearInterval(countdownInterval);
                     timerDisplay.classList.remove('countdown'); // 恢复默认样式
                     playSound1(); // 在这里播放声音提示
+                    enterFullscreen(); // 尝试进入全屏模式
                     intervalId = setInterval(() => {
                         timeLeft++; // 正向计时
                         timerDisplay.textContent = timeLeft;
@@ -131,6 +132,20 @@
         }
         startButton.classList.add('hidden');
         stopButton.classList.remove('hidden');
+    }
+
+    // 进入全屏模式
+    function enterFullscreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+        }
     }
 
     // 播放声音提示
@@ -165,6 +180,20 @@
             startButton.classList.remove('hidden');
             stopButton.classList.add('hidden');
             displaySummary(); // 更新总结信息
+            exitFullscreen(); // 退出全屏模式
+        }
+    }
+
+    // 退出全屏模式
+    function exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { // Firefox
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { // IE/Edge
+            document.msExitFullscreen();
         }
     }
 
