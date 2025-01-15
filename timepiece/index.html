@@ -90,8 +90,7 @@
 </div>
 
 <div id="summary" class="weui-cell__bd"></div>
-<!-- 你的HTML结构 -->
-<script src="https://cdn.jsdelivr.net/npm/nosleep.js@0.12.0/dist/NoSleep.min.js"></script>
+
 <script>
     // 获取显示时间的元素
     const timerDisplay = document.getElementById('timer');
@@ -108,9 +107,6 @@
     const records = [];
     let firstStartTime = null;
 
-    // NoSleep实例
-    const noSleep = new NoSleep();
-
     // Wake Lock API 实例
     let wakeLock = null;
 
@@ -120,7 +116,6 @@
         timeLeft = 0; // 重置时间为 0
 
         if (intervalId === null) {
-            noSleep.enable(); // 启用NoSleep
             requestWakeLock(); // 请求 Wake Lock
             enterFullscreen(); // 尝试进入全屏模式
             // 倒计时三秒
@@ -216,7 +211,6 @@
             stopButton.classList.add('hidden');
             displaySummary(); // 更新总结信息
             exitFullscreen(); // 退出全屏模式
-            noSleep.disable(); // 禁用NoSleep
             releaseWakeLock(); // 释放 Wake Lock
         }
     }
