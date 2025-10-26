@@ -107,12 +107,16 @@
     const records = [];
     let firstStartTime = null;
 
+    // Wake Lock API 实例
+    let wakeLock = null;
+
     // 开始计时
     function startTimer() {
         initialTime = parseInt(initialTimeInput.value, 10); // 获取初始时间
         timeLeft = 0; // 重置时间为 0
 
         if (intervalId === null) {
+            requestWakeLock(); // 请求 Wake Lock
             enterFullscreen(); // 尝试进入全屏模式
             // 倒计时三秒
             let countdown = 3;
@@ -159,6 +163,19 @@
         }
     }
 
+    // 请求 Wake Lock
+    async function requestWakeLock() {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            wakeLock.addEventListener('release', () => {
+                console.log('Wake Lock was released');
+            });
+            console.log('Wake Lock is active');
+        } catch (err) {
+            console.error(`${err.name}, ${err.message}`);
+        }
+    }
+
     // 播放声音提示
     const audio1 = new Audio('mp3/1.mp3'); // 替换为实际的声音文件URL
     const audio2 = new Audio('mp3/2.mp3'); // 替换为实际的声音文件URL
@@ -194,6 +211,18 @@
             stopButton.classList.add('hidden');
             displaySummary(); // 更新总结信息
             exitFullscreen(); // 退出全屏模式
+            releaseWakeLock(); // 释放 Wake Lock
+        }
+    }
+
+    // 释放 Wake Lock
+    function releaseWakeLock() {
+        if (wakeLock) {
+            wakeLock.release().then(() => {
+                wakeLock = null;
+            }).catch(err => {
+                console.error(`${err.name}, ${err.message}`);
+            });
         }
     }
 

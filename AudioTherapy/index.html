@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大周天共振疗愈</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4682b4;
+            margin-top: 0;
+        }
+        select {
+            padding: 12px;
+            font-size: 16px;
+            margin: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 80%;
+            max-width: 400px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            min-width: 80px;
+            touch-action: manipulation;
+        }
+        .play-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .stop-btn {
+            background-color: #ff9800;
+            color: white;
+        }
+        #audio-info {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            min-height: 27px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+            select {
+                width: 95%;
+                margin: 15px 0;
+                padding: 15px;
+                font-size: 18px;
+            }
+            button {
+                padding: 15px 20px;
+                font-size: 18px;
+                min-width: 100px;
+            }
+            .button-container {
+                gap: 15px;
+            }
+            #audio-info {
+                font-size: 16px;
+            }
+        }
+
+        /* 大屏设备优化 */
+        @media (min-width: 1200px) {
+            body {
+                max-width: 1000px;
+                padding: 30px;
+            }
+            .container {
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>大周天共振疗愈</h1>
+        <div>
+            <label for="modeSelector" style="font-size: 18px; margin-right: 10px;">选择模式:</label>
+            <select id="modeSelector" onchange="changeMode()">
+                <option value="single">单条经络（单声道）</option>
+                <option value="double">双条经络（双声道）</option>
+                <option value="triple">三条经络（单声道）</option>
+            </select>
+        </div>
+        <div>
+            <label for="audioSelector" style="font-size: 18px; margin-right: 10px;">选择音频:</label>
+            <select id="audioSelector" onchange="selectAudio()">
+                <!-- 选项将根据模式动态生成 -->
+            </select>
+        </div>
+        <div class="button-container">
+            <button class="play-btn" onclick="playAudio()">播放</button>
+            <button class="stop-btn" onclick="stopAudio()">停止</button>
+        </div>
+        <div id="audio-info"></div>
+        <audio id="audioPlayer" loop>
+            您的浏览器不支持音频元素。
+        </audio>
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        const audioInfo = document.getElementById('audio-info');
+        const audioSelector = document.getElementById('audioSelector');
+        const modeSelector = document.getElementById('modeSelector');
+
+        // 定义不同模式下的音频选项
+        const audioOptions = {
+            single: [
+                { value: "./single/心.mp3", text: "【红白】心经" },
+                { value: "./single/肝.mp3", text: "【红白】肝经" },
+                { value: "./single/脾.mp3", text: "【红白】脾经" },
+                { value: "./single/肺.mp3", text: "【红白】肺经" },
+                { value: "./single/肾.mp3", text: "【红白】肾经" },
+                { value: "./single/胃.mp3", text: "【红白】胃经" },
+                { value: "./single/胆.mp3", text: "【红白】胆经" },
+                { value: "./single/心包.mp3", text: "【红白】心包经" },
+                { value: "./single/三焦.mp3", text: "【红白】三焦经" },
+                { value: "./single/大肠.mp3", text: "【红白】大肠经" },
+                { value: "./single/小肠.mp3", text: "【红白】小肠经" },
+                { value: "./single/膀胱.mp3", text: "【红白】膀胱经" }
+            ],
+            double: [
+                { value: "./double/左肝右肺.mp3", text: "【红】肝经【白】肺经" },
+                { value: "./double/肝，胆.mp3", text: "【红】肝经【白】胆经" },
+                { value: "./double/肾，膀胱.mp3", text: "【红】肾经【白】膀胱经" },
+                { value: "./double/脾，胃.mp3", text: "【红】脾经【白】胃经" },
+                { value: "./double/三焦，心包.mp3", text: "【红】三焦经【白】心包经" },
+                { value: "./double/大肠，肺.mp3", text: "【红】大肠经【白】肺经" },
+                { value: "./double/小肠，心.mp3", text: "【红】小肠经【白】心经" },
+            ],
+            triple: [
+                { value: "./triple/三阴交.mp3", text: "【红白】三阴交穴" },
+            ]
+        };
+
+        // 跳过首尾时间（秒）
+        const skipStartSeconds = 3;
+        const skipEndSeconds = 3;
+        let skipEndTime = 0;
+        let checkingTime = false;
+
+        // 页面加载时初始化音频选项
+        window.onload = function() {
+            changeMode();
+        };
+
+        // 切换模式
+        function changeMode() {
+            const mode = modeSelector.value;
+            const options = audioOptions[mode];
+
+            // 清空现有选项
+            audioSelector.innerHTML = '';
+
+            // 添加新模式的选项
+            options.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option.value;
+                opt.text = option.text;
+                audioSelector.appendChild(opt);
+            });
+
+            // 自动选择第一个选项
+            if (options.length > 0) {
+                audioSelector.selectedIndex = 0;
+                selectAudio();
+            }
+        }
+
+        // 检测是否为移动设备
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        }
+
+        // 在移动设备上自动播放需要用户交互
+        function selectAudio() {
+            const selectedOption = audioSelector.options[audioSelector.selectedIndex];
+            if (selectedOption.value) {
+                audioPlayer.src = selectedOption.value;
+                audioInfo.textContent = "当前选择: " + selectedOption.text;
+
+                // 移动设备上的特殊处理
+                if (isMobileDevice()) {
+                    audioInfo.textContent += " (点击播放按钮开始)";
+                }
+
+                // 当音频加载完成后设置跳过结尾的时间点
+                audioPlayer.addEventListener('loadedmetadata', function() {
+                    skipEndTime = audioPlayer.duration - skipEndSeconds;
+                });
+            } else {
+                audioInfo.textContent = "";
+            }
+        }
+
+        function playAudio() {
+            if (audioSelector.value) {
+                audioPlayer.play()
+                    .then(() => {
+                        // 设置起始播放时间为跳过时间处
+                        audioPlayer.currentTime = skipStartSeconds;
+                        audioInfo.textContent = "正在播放: " + audioSelector.options[audioSelector.selectedIndex].text;
+                        checkingTime = true;
+                    })
+                    .catch(error => {
+                        audioInfo.textContent = "播放失败，请检查音频文件路径或浏览器设置";
+                        console.error("播放失败:", error);
+                    });
+            } else {
+                alert("请先选择一个音频文件");
+            }
+        }
+
+        function stopAudio() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            checkingTime = false;
+            if (audioSelector.value) {
+                audioInfo.textContent = "已停止: " + audioSelector.options[audioSelector.selectedIndex].text;
+            }
+        }
+
+        // 使用 requestAnimationFrame 更精确地检测时间点，避免停顿
+        function checkTime() {
+            if (checkingTime && skipEndTime > 0 && audioPlayer.currentTime >= (skipEndTime - 0.05)) {
+                // 提前一点时间进行跳转，使过渡更平滑
+                // 如果启用了循环播放，则跳回到开头加跳过时间
+                if (audioPlayer.loop) {
+                    audioPlayer.currentTime = skipStartSeconds;
+                }
+            }
+            requestAnimationFrame(checkTime);
+        }
+
+        // 启动时间检测
+        checkTime();
+
+        // 监听音频播放结束事件（虽然设置了循环播放，但以防万一）
+        audioPlayer.addEventListener('ended', function() {
+            if (audioSelector.value) {
+                audioInfo.textContent = "播放完毕: " + audioSelector.options[audioSelector.selectedIndex].text;
+            }
+        });
+    </script>
+</body>
+</html>
